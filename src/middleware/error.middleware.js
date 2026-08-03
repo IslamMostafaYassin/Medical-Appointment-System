@@ -4,7 +4,7 @@ const AppError=require("../utils/AppError.js")
 const jwt=require("jsonwebtoken")
 
 const globalErrorHandler=(err,req,res,next)=>{
-	console.log(err)
+	console.log("Error: ",err.message)
 	let message="Internal server error"
 	let statusCode=500
 	if (err instanceof jwt.JsonWebTokenError){
