@@ -3,7 +3,6 @@ const isValidDate=(dateString)=>{
 	if (date.getTime()<Date.now()){
 		return false
 	}
-	console.log(date.getTime(),"\n",Date.now())
 	if (date.getTime()>Date.now()+30*24*60*60*1000){
 		return false
 	}

@@ -23,9 +23,12 @@ const createAppointment=async(req,res,next)=>{
 			throw new AppError(400,"you must be a patient to make an appointment")
 		}
 		const {doctorId,date}=req.body
-		if (!isValidDate(date)){
-			throw new AppError(400,"invalid date")
-		}
+		if (!isValidDate(date)) {
+      throw new AppError(
+        400,
+        "invalid date. make sure it is an upcoming time within 30 days and on 30-minute intervals (e.g. 11:30, 12:00)."
+      );
+    }
 		const doctorExists = await User.findOne({ _id: doctorId, role: "doctor" });
 	    if (!doctorExists) {
 	      throw new AppError(404, "doctor not found");
