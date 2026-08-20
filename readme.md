@@ -27,5 +27,4 @@ A RESTful backend API for managing doctor appointments with role-based access co
 
 1. **Clone the repository:**
    ```bash
-   git clone [https://github.com/IslamMostafaYassin/Medical-Appointment-System.git](https://github.com/IslamMostafaYassin/Medical-Appointment-System.git)
-   cd Medical-Appointment-System
+   git clone https://github.com/IslamMostafaYassin/Medical-Appointment-System
