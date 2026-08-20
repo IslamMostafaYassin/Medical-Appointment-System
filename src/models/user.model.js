@@ -1,5 +1,35 @@
 const mongoose=require("mongoose")
 
+/**
+ * @swagger
+ * components:
+ *   schemas:
+ *     User:
+ *       type: object
+ *       required:
+ *         - username
+ *         - email
+ *         - password
+ *       properties:
+ *         username:
+ *           type: string
+ *           example: ahmed
+ *         email:
+ *           type: string
+ *           example: ahmed@gmail.com
+ *         password:
+ *           type: string
+ *           example: hardpassword
+ *         role:
+ *           type: string
+ *           enum: [patient, doctor, admin]
+ *           default: patient
+ *           example: doctor
+ *         specialization:
+ *           type: string
+ *           description: Only required if role is doctor
+ *           example: Cardiology
+ */
 const userSchema=new mongoose.Schema({
 		username:{
 			type:String,

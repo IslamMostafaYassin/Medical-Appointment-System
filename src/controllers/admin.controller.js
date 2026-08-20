@@ -2,6 +2,32 @@ const User=require("../models/user.model.js")
 const Appointment=require("../models/appointment.model.js")
 const AppError=require("../utils/AppError.js")
 
+/**
+ * @swagger
+ * /api/v1/admin/users:
+ *   get:
+ *     summary: get all users
+ *     tags: [Admin]
+ *     responses:
+ *       200:
+ *         description: success
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         description: unauthenticated
+ *       403:
+ *         description: unauthorized
+ */
 const getAllUsers=async(req,res,next)=>{
 	try{
 		const users=await User.find().select("-password");
@@ -16,16 +42,50 @@ const getAllUsers=async(req,res,next)=>{
 
 }
 
+
+/**
+ * @swagger
+ * /api/v1/admin/users/{id}:
+ *   delete:
+ *     summary: delete a user and their related appointments
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: the ID of the user to delete
+ *     responses:
+ *       200:
+ *         description: User deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: unauthenticated
+ *       403:
+ *         description: unauthorized
+ *       404:
+ *         description: User not found
+ */
 const deleteUser=async(req,res,next)=>{
 	try{
-		const id=req.params.id
-		const user=await User.findByIdAndDelete(id)
+		const {userId}=req.user
+		const user=await User.findByIdAndDelete(userId)
 							.select('-password');
 		if (!user){
 			throw new AppError(404,"user not found")
 		}
 		await Appointment.deleteMany({
-	      $or: [{ patientId: id }, { doctorId: id }]
+	      $or: [{ patientId: userId }, { doctorId: userId }]
 	    });
 		return res.send({
 			success:true,
@@ -38,7 +98,60 @@ const deleteUser=async(req,res,next)=>{
 }
 
 
-
+/**
+ * @swagger
+ * /api/v1/admin/users/{id}:
+ *   put:
+ *     summary: update a user
+ *     tags: [Admin]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The ID of the user to update
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: updatedName
+ *               email:
+ *                 type: string
+ *                 example: updated@example.com
+ *               role:
+ *                 type: string
+ *                 enum: [patient, doctor, admin]
+ *               specialization:
+ *                 type: string
+ *                 example: Neurology
+ *     responses:
+ *       200:
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       400:
+ *         description: Invalid payload data
+ *       401:
+ *         description: unauthenticated
+ *       403:
+ *         description: unauthorized
+ *       404:
+ *         description: User not found
+ */
 const updateUser=async(req,res,next)=>{
 	try{
 		const user=await User.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators: true})
@@ -57,6 +170,35 @@ const updateUser=async(req,res,next)=>{
 
 }
 
+
+/**
+ * @swagger
+ * /api/v1/admin/appointments:
+ *   get:
+ *     summary: Retrieve all appointments in the system
+ *     tags: [Admin]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: List of all appointments with populated doctor and patient details
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   type: array
+ *                   items:
+ *                     $ref: '#/components/schemas/Appointment'
+ *       401:
+ *         description: Unauthenticated
+ *       403:
+ *         description: Unauthorized
+ */
 const getAllAppointments=async(req,res,next)=>{
 	try{
 		const appointments=await Appointment.find()
@@ -72,9 +214,41 @@ const getAllAppointments=async(req,res,next)=>{
 
 }
 
+
+/**
+ * @swagger
+ * /api/v1/admin/appointments/{id}:
+ *   delete:
+ *     summary: Delete an appointment by ID
+ *     tags: [Admin]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The MongoDB ObjectId of the appointment to delete
+ *     responses:
+ *       200:
+ *         description: Appointment deleted successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/Appointment'
+ *       400:
+ *         description: Appointment not found
+ */
 const deleteAppointment=async(req,res,next)=>{
 	try{
-		const appointment=await Appointment.findByIdAndDelete(req.user.id)
+		const appointment=await Appointment.findByIdAndDelete(req.params.id)
 		if (!appointment){
 			throw new AppError(400,"appointment not found")
 		}

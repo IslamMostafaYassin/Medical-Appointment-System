@@ -10,6 +10,48 @@ const COOKIE_OPTIONS={
 			secure:process.env.NODE_ENV === 'production'
 		}
 
+/**
+ * @swagger
+ * /api/v1/auth/register:
+ *   post:
+ *     summary: Register a new user
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - username
+ *               - email
+ *               - password
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 example: johndoe
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: supersecret123
+ *               role:
+ *                 type: string
+ *                 enum: [patient, doctor, admin]
+ *                 default: patient
+ *               specialization:
+ *                 type: string
+ *                 description: Required only if role is doctor
+ *                 example: Cardiology
+ *     responses:
+ *       201:
+ *         description: Registration successful
+ *       400:
+ *         description: Missing fields or user already exists
+ */
 const register=async(req,res,next)=>{
 	try{
 		const {username,email,password,role,}=req.body;
@@ -46,6 +88,36 @@ const register=async(req,res,next)=>{
 	}
 }
 
+/**
+ * @swagger
+ * /api/v1/auth/login:
+ *   post:
+ *     summary: Log in to an account
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - email
+ *               - password
+ *             properties:
+ *               email:
+ *                 type: string
+ *                 format: email
+ *                 example: johndoe@example.com
+ *               password:
+ *                 type: string
+ *                 format: password
+ *                 example: supersecret123
+ *     responses:
+ *       200:
+ *         description: Login successful
+ *       400:
+ *         description: Invalid credentials
+ */
 const login=async(req,res,next)=>{
 	try{
 		const {email,password}=req.body
@@ -76,6 +148,16 @@ const login=async(req,res,next)=>{
 	}
 }
 
+/**
+ * @swagger
+ * /api/v1/auth/logout:
+ *   get:
+ *     summary: Log out current user and clear JWT cookie
+ *     tags: [Auth]
+ *     responses:
+ *       200:
+ *         description: Signout successful
+ */
 const logout=(req,res)=>{
 	res.clearCookie("jwt",COOKIE_OPTIONS)
 
@@ -85,6 +167,30 @@ const logout=(req,res)=>{
 	})
 }
 
+/**
+ * @swagger
+ * /api/v1/auth/profile:
+ *   get:
+ *     summary: Fetch profile of the currently logged-in user
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Current user details returned
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 data:
+ *                   $ref: '#/components/schemas/User'
+ *       401:
+ *         description: Unauthenticated
+ */
 const getCurrentUser=async(req,res,next)=>{
 	try{
 		const user=await User.findOne({_id:req.user.userId}).select("-password")

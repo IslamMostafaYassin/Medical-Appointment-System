@@ -5,6 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node src/server.js",
     "dev": "nodemon src/server.js"
   },
   "keywords": [],
@@ -19,6 +20,8 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.13.20",
     "morgan": "^1.10.0",
+    "swagger-jsdoc": "^5.0.1",
+    "swagger-ui-express": "^4.1.6",
     "zod": "^3.22.4"
   },
   "devDependencies": {
