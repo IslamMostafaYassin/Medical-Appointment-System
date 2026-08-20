@@ -10,7 +10,7 @@ const router=express.Router()
 router.post("/register",validate(registerSchema),register)
 router.post("/login",validate(loginSchema),login)
 router.get("/logout",logout)
-router.get("/profile",authenticate,getCurrentUser)
+router.get("/me",authenticate,getCurrentUser)
 
 
 module.exports=router

@@ -12,7 +12,7 @@ router.get("/doctors",getAllDoctors);
 
 router.post("/",validate(createAppointmentSchema),createAppointment);
 
-router.get("/my-appointments",getMyAppointments)
+router.get("/me",getMyAppointments)
 
 
 module.exports=router

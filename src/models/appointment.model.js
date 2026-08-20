@@ -13,11 +13,11 @@ const mongoose=require("mongoose")
   *       properties:
   *         patientId:
   *           type: string
-  *           description: User ObjectId refering to a patient
+  *           description: user ObjectId refering to a patient
   *           example: 66b1a2f43d8c11a2489e0123
   *         doctorId:
   *           type: string
-  *           description: User ObjectId refering to a doctor
+  *           description: user ObjectId refering to a doctor
   *           example: 66b1a2f43d8c11a2489e0456
   *         date:
   *           type: string

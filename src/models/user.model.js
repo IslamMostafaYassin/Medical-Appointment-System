@@ -27,8 +27,8 @@ const mongoose=require("mongoose")
  *           example: doctor
  *         specialization:
  *           type: string
- *           description: Only required if role is doctor
- *           example: Cardiology
+ *           description: only required if role is doctor
+ *           example: cardiology
  */
 const userSchema=new mongoose.Schema({
 		username:{

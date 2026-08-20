@@ -17,13 +17,13 @@ const specs=require("./config/swagger.config.js")
 
 const app=express()
 connectDB()
-
-app.use(cors({
-  credentials: true,
-}));
 app.use(express.json())
 app.use(cookieParser())
 app.use(morgan("dev"))
+
+app.get("/",(req,res)=>{
+	res.send("please go to /api/v1 path")
+})
 
 app.get("/api/v1",(req,res)=>{
 	res.send("welcome to my Medical Appointment System!")

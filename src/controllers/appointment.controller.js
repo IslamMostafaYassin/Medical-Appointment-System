@@ -7,11 +7,11 @@ const AppError=require("../utils/AppError.js")
  * @swagger
  * /api/v1/appointments/doctors:
  *   get:
- *     summary: Get all registered doctors
+ *     summary: get all doctors
  *     tags: [Appointments]
  *     responses:
  *       200:
- *         description: List of doctors retrieved successfully
+ *         description: doctors returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -24,6 +24,8 @@ const AppError=require("../utils/AppError.js")
  *                   type: array
  *                   items:
  *                     $ref: '#/components/schemas/User'
+ *       401:
+ *         description: unauthenticated
  */
 const getAllDoctors=async(req,res,next)=>{
 	try{
@@ -42,10 +44,8 @@ const getAllDoctors=async(req,res,next)=>{
  * @swagger
  * /api/v1/appointments:
  *   post:
- *     summary: Book a new appointment (Patient only)
+ *     summary: create an appointment (patient only)
  *     tags: [Appointments]
- *     security:
- *       - cookieAuth: []
  *     requestBody:
  *       required: true
  *       content:
@@ -61,11 +61,10 @@ const getAllDoctors=async(req,res,next)=>{
  *                 example: 66b1a2f43d8c11a2489e0999
  *               date:
  *                 type: string
- *                 format: date-time
  *                 example: 2026-09-01T10:30:00.000Z
  *     responses:
  *       201:
- *         description: Appointment successfully created
+ *         description: appointment created successfully
  *         content:
  *           application/json:
  *             schema:
@@ -77,9 +76,11 @@ const getAllDoctors=async(req,res,next)=>{
  *                 data:
  *                   $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: Invalid date format, non-patient caller, or time slot already taken
+ *         description: invalid date format, caller is not a patient, or time already taken
+ *       401:
+ *         description: unauthenticated
  *       404:
- *         description: Doctor not found
+ *         description: doctor not found
  */
 const createAppointment=async(req,res,next)=>{
 	try{
@@ -122,15 +123,13 @@ const createAppointment=async(req,res,next)=>{
 
 /**
  * @swagger
- * /api/v1/appointments/my-appointments:
+ * /api/v1/appointments/me:
  *   get:
- *     summary: Get appointments for the currently logged-in patient or doctor
+ *     summary: get appointments for logged in patient or doctor
  *     tags: [Appointments]
- *     security:
- *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: List of user appointments retrieved successfully
+ *         description: appointments returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -144,9 +143,9 @@ const createAppointment=async(req,res,next)=>{
  *                   items:
  *                     $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: User role is neither doctor nor patient
+ *         description: User role must be a doctor or a patient
  *       401:
- *         description: Unauthenticated
+ *         description: unauthenticated
  */
 const getMyAppointments=async(req,res,next)=>{
 	try{

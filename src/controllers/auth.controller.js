@@ -14,7 +14,7 @@ const COOKIE_OPTIONS={
  * @swagger
  * /api/v1/auth/register:
  *   post:
- *     summary: Register a new user
+ *     summary: register a new user
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -29,28 +29,26 @@ const COOKIE_OPTIONS={
  *             properties:
  *               username:
  *                 type: string
- *                 example: johndoe
+ *                 example: ali
  *               email:
  *                 type: string
- *                 format: email
- *                 example: johndoe@example.com
+ *                 example: ali@gmail.com
  *               password:
  *                 type: string
- *                 format: password
- *                 example: supersecret123
+ *                 example: myveryhardpassword
  *               role:
  *                 type: string
  *                 enum: [patient, doctor, admin]
  *                 default: patient
  *               specialization:
  *                 type: string
- *                 description: Required only if role is doctor
- *                 example: Cardiology
+ *                 description: only required if role is doctor
+ *                 example: cardiology
  *     responses:
  *       201:
- *         description: Registration successful
+ *         description: registration successful
  *       400:
- *         description: Missing fields or user already exists
+ *         description: missing fields or user already exists
  */
 const register=async(req,res,next)=>{
 	try{
@@ -92,7 +90,7 @@ const register=async(req,res,next)=>{
  * @swagger
  * /api/v1/auth/login:
  *   post:
- *     summary: Log in to an account
+ *     summary: log in to an account
  *     tags: [Auth]
  *     requestBody:
  *       required: true
@@ -106,17 +104,15 @@ const register=async(req,res,next)=>{
  *             properties:
  *               email:
  *                 type: string
- *                 format: email
- *                 example: johndoe@example.com
+ *                 example: ahmed@gmail.com
  *               password:
  *                 type: string
- *                 format: password
- *                 example: supersecret123
+ *                 example: password123
  *     responses:
  *       200:
- *         description: Login successful
+ *         description: login successful
  *       400:
- *         description: Invalid credentials
+ *         description: invalid credentials
  */
 const login=async(req,res,next)=>{
 	try{
@@ -152,11 +148,11 @@ const login=async(req,res,next)=>{
  * @swagger
  * /api/v1/auth/logout:
  *   get:
- *     summary: Log out current user and clear JWT cookie
+ *     summary: log out current user and clear JWT cookie
  *     tags: [Auth]
  *     responses:
  *       200:
- *         description: Signout successful
+ *         description: signout successful
  */
 const logout=(req,res)=>{
 	res.clearCookie("jwt",COOKIE_OPTIONS)
@@ -169,15 +165,13 @@ const logout=(req,res)=>{
 
 /**
  * @swagger
- * /api/v1/auth/profile:
+ * /api/v1/auth/me:
  *   get:
- *     summary: Fetch profile of the currently logged-in user
+ *     summary: get data of logged in user
  *     tags: [Auth]
- *     security:
- *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: Current user details returned
+ *         description: user data returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -189,12 +183,11 @@ const logout=(req,res)=>{
  *                 data:
  *                   $ref: '#/components/schemas/User'
  *       401:
- *         description: Unauthenticated
+ *         description: unauthenticated
  */
 const getCurrentUser=async(req,res,next)=>{
 	try{
 		const user=await User.findOne({_id:req.user.userId}).select("-password")
-		const {username,email,role,specialization}=user;
 		return res.send({
 			success:true,
 			data:user

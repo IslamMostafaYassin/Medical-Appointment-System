@@ -10,7 +10,7 @@ const AppError=require("../utils/AppError.js")
  *     tags: [Admin]
  *     responses:
  *       200:
- *         description: success
+ *         description: users returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -58,7 +58,7 @@ const getAllUsers=async(req,res,next)=>{
  *         description: the ID of the user to delete
  *     responses:
  *       200:
- *         description: User deleted successfully
+ *         description: user deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -74,7 +74,7 @@ const getAllUsers=async(req,res,next)=>{
  *       403:
  *         description: unauthorized
  *       404:
- *         description: User not found
+ *         description: user not found
  */
 const deleteUser=async(req,res,next)=>{
 	try{
@@ -110,7 +110,7 @@ const deleteUser=async(req,res,next)=>{
  *         required: true
  *         schema:
  *           type: string
- *         description: The ID of the user to update
+ *         description: the ID of the user to update
  *     requestBody:
  *       required: true
  *       content:
@@ -120,19 +120,19 @@ const deleteUser=async(req,res,next)=>{
  *             properties:
  *               username:
  *                 type: string
- *                 example: updatedName
+ *                 example: newName
  *               email:
  *                 type: string
- *                 example: updated@example.com
+ *                 example: newName@email.com
  *               role:
  *                 type: string
  *                 enum: [patient, doctor, admin]
  *               specialization:
  *                 type: string
- *                 example: Neurology
+ *                 example: neurology
  *     responses:
  *       200:
- *         description: User updated successfully
+ *         description: user updated successfully
  *         content:
  *           application/json:
  *             schema:
@@ -143,14 +143,12 @@ const deleteUser=async(req,res,next)=>{
  *                   example: true
  *                 data:
  *                   $ref: '#/components/schemas/User'
- *       400:
- *         description: Invalid payload data
  *       401:
  *         description: unauthenticated
  *       403:
  *         description: unauthorized
  *       404:
- *         description: User not found
+ *         description: user not found
  */
 const updateUser=async(req,res,next)=>{
 	try{
@@ -174,13 +172,11 @@ const updateUser=async(req,res,next)=>{
  * @swagger
  * /api/v1/admin/appointments:
  *   get:
- *     summary: Retrieve all appointments in the system
+ *     summary: return all appointments
  *     tags: [Admin]
- *     security:
- *       - cookieAuth: []
  *     responses:
  *       200:
- *         description: List of all appointments with populated doctor and patient details
+ *         description: appointments returned successfully
  *         content:
  *           application/json:
  *             schema:
@@ -194,9 +190,9 @@ const updateUser=async(req,res,next)=>{
  *                   items:
  *                     $ref: '#/components/schemas/Appointment'
  *       401:
- *         description: Unauthenticated
+ *         description: unauthenticated
  *       403:
- *         description: Unauthorized
+ *         description: unauthorized
  */
 const getAllAppointments=async(req,res,next)=>{
 	try{
@@ -218,20 +214,18 @@ const getAllAppointments=async(req,res,next)=>{
  * @swagger
  * /api/v1/admin/appointments/{id}:
  *   delete:
- *     summary: Delete an appointment by ID
+ *     summary: delete an appointment by ID
  *     tags: [Admin]
- *     security:
- *       - cookieAuth: []
  *     parameters:
  *       - in: path
  *         name: id
  *         required: true
  *         schema:
  *           type: string
- *         description: The MongoDB ObjectId of the appointment to delete
+ *         description: the ID of the appointment to delete
  *     responses:
  *       200:
- *         description: Appointment deleted successfully
+ *         description: appointment deleted successfully
  *         content:
  *           application/json:
  *             schema:
@@ -243,7 +237,13 @@ const getAllAppointments=async(req,res,next)=>{
  *                 data:
  *                   $ref: '#/components/schemas/Appointment'
  *       400:
- *         description: Appointment not found
+ *         description: appointment not found
+ *       401:
+ *         description: unauthenticated
+ *       403:
+ *         description: unauthorized
+ *       404:
+ *         description: user not found
  */
 const deleteAppointment=async(req,res,next)=>{
 	try{
